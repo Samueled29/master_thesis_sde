@@ -30,3 +30,6 @@ results/data/
 
 # Optional: ignore generated figures
 # results/figures/
+
+# egg-info
+**/*.egg-info/
