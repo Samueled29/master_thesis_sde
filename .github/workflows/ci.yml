@@ -1,33 +1,31 @@
-name: ci
+name: CI
 
 on:
   push:
-    branches: [master, main]
   pull_request:
-    branches: [master, main]
 
-  jobs:
-    test:
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v5
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-        - name: Install uv
-          uses: astral-sh/setup-uv@v5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        - name: Install Python 
-          run: uv python install
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-        - name: Install dependencies
-          run: uv sync --dev 
+      - name: Install Python
+        run: uv python install
 
-        - name: Run Ruff
-          run: uv run ruff check . 
+      - name: Install dependencies
+        run: uv sync --dev
 
-        - name: Run MyPy
-          run: uv run mypy src tests 
+      - name: Run Ruff
+        run: uv run ruff check .
 
-        - name: Run tests
-          run: uv run pytest
+      - name: Run MyPy
+        run: uv run mypy src tests
+
+      - name: Run tests
+        run: uv run pytest
