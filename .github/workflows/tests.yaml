@@ -30,4 +30,4 @@ jobs:
         uv run pytest -v
 
     - name: Run mypy
-      run: uv run mypy
+      run: uv run mypy src tests
