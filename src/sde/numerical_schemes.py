@@ -1,6 +1,7 @@
+from typing import Callable
+
 import numpy as np
 from numpy.random import Generator
-from typing import Callable
 
 from sde.brownian_motion import brownian_motion
 
@@ -10,7 +11,7 @@ def euler_maruyama(
     sigma: Callable,
     times: np.ndarray,
     x0: np.ndarray,
-    W: np.ndarray = None,
+    W: np.ndarray | None = None,
     rng: Generator | None = None,
     n: int = 1,
     k: int = 1,
@@ -61,7 +62,7 @@ def euler_maruyama_1d(
     sigma: Callable,
     times: np.ndarray,
     x0: float,
-    W: np.ndarray = None,
+    W: np.ndarray | None = None,
     rng: Generator | None = None,
 ) -> np.ndarray:
 

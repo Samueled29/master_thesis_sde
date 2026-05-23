@@ -21,7 +21,8 @@ if __name__ == "__main__":
 
         axs.plot(times, X_multi[i, :])
     for i in range(M):
-        X = euler_maruyama(b, g, times, x0)
+        x0_arr = np.array([x0])
+        X = euler_maruyama(b, g, times, x0_arr)
         X_multi[M + i, :] = X.flatten()
 
         axs.plot(times, X_multi[M + i, :])
