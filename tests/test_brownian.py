@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+
 from sde.brownian_motion import brownian_motion
 
 
