@@ -33,7 +33,10 @@ def euler_maruyama(
     X = np.zeros((n, T))
     X[:, 0] = x0
 
-    dW = np.diff(W, axis=1)
+    if k == 1:
+        dW = np.diff(W)
+    else:
+        dW = np.diff(W, axis=1)
     dt = np.diff(times)
 
     for i in range(T - 1):
@@ -47,12 +50,19 @@ def euler_maruyama(
 
         if n == 1 and k == 1 and diffusion.shape == ():
             diffusion = diffusion.reshape(1, 1)
+        elif n != 1 and k == 1:
+            diffusion = diffusion.reshape(n)
+        elif n == 1 and k != 1:
+            diffusion = diffusion.reshape(1, k)
         elif diffusion.shape != (n, k):
             raise ValueError(
                 f"sigma must return shape ({n}, {k}), got {diffusion.shape}"
             )
 
-        X[:, i + 1] = X[:, i] + drift * dt[i] + diffusion @ dW[:, i]
+        if k != 1:
+            X[:, i + 1] = X[:, i] + drift * dt[i] + diffusion @ dW[:, i]
+        elif k == 1:
+            X[:, i + 1] = X[:, i] + drift * dt[i] + diffusion * dW[i]
 
     return X
 
