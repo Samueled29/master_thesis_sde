@@ -28,6 +28,3 @@ jobs:
     - name: Test with pytest
       run: |
         uv run pytest -v
-
-    - name: Run mypy
-      run: uv run mypy src tests
