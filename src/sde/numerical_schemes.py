@@ -108,11 +108,9 @@ def euler_maruyama_1d(
 
     return X
 
-def explicit_euler_1d(b: Callable,
-    times: np.ndarray,
-    x0: float
-) -> np.ndarray:
-    
+
+def explicit_euler_1d(b: Callable, times: np.ndarray, x0: float) -> np.ndarray:
+
     T = len(times)
 
     X = np.zeros(len(times))
@@ -120,11 +118,11 @@ def explicit_euler_1d(b: Callable,
 
     dt = np.diff(times)
 
-    for i in range(len(times)-1):
+    for i in range(len(times) - 1):
         drift = b(X[i], times[i])
 
         if np.shape(drift) != ():
             raise ValueError(f"b must return a scalar, got shape {np.shape(drift)}")
-        
-        X[i+1] = X[i] + drift * dt[i]
+
+        X[i + 1] = X[i] + drift * dt[i]
     return X
