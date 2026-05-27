@@ -21,6 +21,8 @@ def euler_maruyama(
 
     if W is None:
         W = np.array([brownian_motion(times, rng) for _ in range(k)])
+        if k == 1:
+            W = W.flatten()
     else:
         W = np.asarray(W)
         if W.ndim == 1 and k == 1:
@@ -49,7 +51,7 @@ def euler_maruyama(
             raise ValueError(f"b must return shape ({n},), got {drift.shape}")
 
         if n == 1 and k == 1 and diffusion.shape == ():
-            diffusion = diffusion.reshape(1, 1)
+            diffusion = diffusion.reshape(1)
         elif n != 1 and k == 1:
             diffusion = diffusion.reshape(n)
         elif n == 1 and k != 1:
@@ -104,4 +106,25 @@ def euler_maruyama_1d(
 
         X[i + 1] = X[i] + drift * dt[i] + diffusion * dW[i]
 
+    return X
+
+def explicit_euler_1d(b: Callable,
+    times: np.ndarray,
+    x0: float
+) -> np.ndarray:
+    
+    T = len(times)
+
+    X = np.zeros(len(times))
+    X[0] = x0
+
+    dt = np.diff(times)
+
+    for i in range(len(times)-1):
+        drift = b(X[i], times[i])
+
+        if np.shape(drift) != ():
+            raise ValueError(f"b must return a scalar, got shape {np.shape(drift)}")
+        
+        X[i+1] = X[i] + drift * dt[i]
     return X
