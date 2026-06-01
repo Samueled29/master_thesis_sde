@@ -1,9 +1,11 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 
 from sde.brownian_motion import brownian_motion
 from sde.numerical_schemes import euler_maruyama_1d
+
 
 def get_figures_dir():
     root = Path(__file__).resolve().parents[2]
@@ -11,14 +13,18 @@ def get_figures_dir():
     fig_dir.mkdir(parents=True, exist_ok=True)
     return fig_dir
 
+
 def b_holder(x, t):
     return -3 * abs(x) ** (2 / 3)
 
-def b_bdd(x,t):
+
+def b_bdd(x, t):
     return np.sign(x)
 
-def b_regular(x,t):
-    return -0.5*x**2
+
+def b_regular(x, t):
+    return -0.5 * x**2
+
 
 def strong_error_from_diff(diff: np.ndarray, norm_type: str) -> float:
     # diff shape: (M, N_h), M paths and N_h time points
@@ -41,10 +47,14 @@ def strong_error_from_diff(diff: np.ndarray, norm_type: str) -> float:
 
 
 def run_convergence(
-    M: int = 100, h_ref: float = 1e-5, seed: int = 42, drift_type: str = "holder",norm_type: str = "terminal_l2"
+    M: int = 100,
+    h_ref: float = 1e-5,
+    seed: int = 42,
+    drift_type: str = "holder",
+    norm_type: str = "terminal_l2",
 ):
-    """ # "holder" for holder drift, "bounded" for only bounded (discont) drift,
-      "osc" for osciallatory drift, "regual" for regualr drift"""
+    """# "holder" for holder drift, "bounded" for only bounded (discont) drift,
+    "osc" for osciallatory drift, "regual" for regualr drift"""
     t0 = 0.0
     t1 = 1.0
     n_ref = int((t1 - t0) / h_ref) + 1
@@ -58,13 +68,11 @@ def run_convergence(
 
     # M sample BM paths
     W = np.array([brownian_motion(times=times, rng=rng) for _ in range(M)])
-   
+
     eps = 1
     sigma = lambda x, t: np.sqrt(eps)
 
-    drif_dict = {"holder": b_holder,
-                 "bounded": b_bdd,
-                 "regular": b_regular}
+    drif_dict = {"holder": b_holder, "bounded": b_bdd, "regular": b_regular}
     if drift_type not in drif_dict:
         raise ValueError("Drift not found")
     b = drif_dict[drift_type]
@@ -124,13 +132,15 @@ def run_convergence(
     ax.set_ylabel("Strong error")
     ax.legend()
     plt.tight_layout()
-   
+
     fig_dir = get_figures_dir()
-    fig.savefig(fig_dir / f"plot_b_{drift_type}_eps_{eps}.png", dpi = 300, bbox_inches = "tight")
+    fig.savefig(
+        fig_dir / f"plot_b_{drift_type}_eps_{eps}.png", dpi=300, bbox_inches="tight"
+    )
 
     plt.show()
     plt.close(fig)
 
 
 if __name__ == "__main__":
-    run_convergence(M=100, h_ref=1e-5, drift_type = "regular" , norm_type="space_time_l2")
+    run_convergence(M=100, h_ref=1e-5, drift_type="regular", norm_type="space_time_l2")
