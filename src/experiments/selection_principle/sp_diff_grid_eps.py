@@ -16,6 +16,7 @@ def make_c_grid(t_fit_max=5, mode="wide"):
     if mode == "refined":
         return np.linspace(0, 0.05, 201)
 
+
 def get_figures_dir(experiment: str, group: str):
     root = Path(__file__).resolve().parents[3]
     fig_dir = root / "results" / "figures" / "selection_principle" / experiment / group
@@ -53,7 +54,7 @@ def simulate_mc(times, eps, M, c_grid, rng, x0=0.0, t_fit_max=5):
     """Run simulation of Euler Maruyama for M BM realizations. for every realization, compute the best branch
     using best_fit_c.
     Return numerical solutions X, best branches and errors for every trajectory."""
-    
+
     X = np.zeros((M, len(times)))
     c_values = np.zeros(M)
     errors = np.zeros(M)
@@ -80,7 +81,6 @@ def simulate_mc(times, eps, M, c_grid, rng, x0=0.0, t_fit_max=5):
         )
 
     return X, c_values, errors
-
 
 
 def experiment_eps(
@@ -138,8 +138,6 @@ def experiment_eps(
     return times, c_grid, results
 
 
-
-    
 def experiment_grid(
     n_values,
     eps=1e-8,
@@ -219,7 +217,8 @@ def plot_c_histograms(results, title, group, filename, bins=40):
     plt.show()
     plt.close(fig)
 
-def plot_variability_eps(results, group = "eps"):
+
+def plot_variability_eps(results, group="eps"):
     """Plot variability of the selected constants depending on the noise intensity."""
     eps_values = np.array(list(results.keys()))
     mean_c = np.array([results[e]["mean_c"] for e in eps_values])
@@ -232,13 +231,13 @@ def plot_variability_eps(results, group = "eps"):
     ax.set_ylabel(r"$c_\star$")
     ax.set_title(r"Dependence of selected $c_\star$ on noise level")
     plt.tight_layout()
-    fig_dir = get_figures_dir(experiment=EXPERIMENT, group= group)
+    fig_dir = get_figures_dir(experiment=EXPERIMENT, group=group)
     plt.savefig(fig_dir / "c_variability.png", dpi=300)
     plt.show()
     plt.close(fig)
 
 
-def plot_variability_grid(results, group = "grid"):
+def plot_variability_grid(results, group="grid"):
     """Plot variability of c for different grid sizes, fixed noise intensity."""
     n_values = np.array(list(results.keys()))
     dt_values = np.array([results[n]["dt"] for n in n_values])
@@ -259,8 +258,7 @@ def plot_variability_grid(results, group = "grid"):
 
 
 if __name__ == "__main__":
-
-    #C_GRID_MODE = "wide"
+    # C_GRID_MODE = "wide"
     C_GRID_MODE = "refined"
 
     output_suffix = C_GRID_MODE
