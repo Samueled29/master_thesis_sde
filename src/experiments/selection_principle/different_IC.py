@@ -32,9 +32,8 @@ def optimal_c(times, x, c0, t_fit_max=10):
     # fun = lambda c: np.sum((x_fit - branch_path(t_fit, c)) ** 2)
     fun = lambda c: np.mean((x_fit - branch_path(t_fit, c)) ** 2)
 
-    #result = optimize.minimize_scalar(fun, bounds=(times[0], t_fit_max), method="bounded")
-    result = optimize.minimize_scalar(fun, method = "brent")
-    #result = optimize.minimize(fun, c0,  method = "Newton-CG")
+    #result = optimize.minimize(fun, bounds=(times[0], t_fit_max), method="bounded")
+    result = optimize.minimize_scalar(fun, method="brent")
     c_star = result.x
     err_star = result.fun
 
@@ -47,7 +46,7 @@ if __name__ == "__main__":
     # n = 50000
     dt = 2e-5
     times = np.arange(t0, t1 + dt, dt)
-    x0 = 0
+    x0 = 1
 
     rng = np.random.default_rng(42)
     W = brownian_motion(times, rng=rng)
@@ -68,10 +67,12 @@ if __name__ == "__main__":
 
         ax.plot(times, X[i, :], linewidth=2, label=rf"$\varepsilon={eps}$")
 
-    c_grid = np.linspace(-0.5, 2, 5)
-    if 0 not in c_grid:
-        idx = np.searchsorted(c_grid, 0)
-        c_grid = np.insert(c_grid, idx, 0)
+    c_grid = np.linspace(-1.5, -0.5, 5)
+    if -1 not in c_grid:
+        idx = np.searchsorted(c_grid, -1)
+        c_grid = np.insert(c_grid, idx, -1)
+
+    print(c_grid)
 
     Y = analytical_solutions(times, c_grid=c_grid)
 

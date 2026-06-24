@@ -30,9 +30,11 @@ def drift_oscillating(x):
     return out
 
 
-def drift(x):
-    eps = 1e-6
-    return x / (x**2 + eps)
+def drift_irregular(x):
+    out = np.zeros_like(x, dtype=float)
+    mask = x != 0
+    out[mask] = 1/np.abs(x[mask])
+    return out
 
 
 def euler_from_increments(dW, dt, x0=0.0, sigma=1.0):
@@ -40,7 +42,7 @@ def euler_from_increments(dW, dt, x0=0.0, sigma=1.0):
     X = np.full(M, x0)
 
     for n in range(N):
-        X = X + drift(X) * dt + sigma * dW[:, n]
+        X = X + drift_oscillating(X) * dt + sigma * dW[:, n]
 
     return X
 
@@ -89,9 +91,11 @@ if __name__ == "__main__":
 plt.figure()
 plt.loglog(dt_values, errors, "o-", label=f"ordine ≈ {slope:.3f}")
 plt.loglog(dt_values, np.exp(intercept) * dt_values**slope, "--", label="fit")
+plt.loglog(dt_values, dt_values/dt_values[-1]*errors[-1], "-.", label="Order 1 slope reference") 
 plt.xlabel(r"$\Delta t$")
 plt.ylabel(r"$\mathbb{E}|X_T^{\Delta t} - X_T^{ref}|$")
 plt.title("Strong error Euler-Maruyama")
 plt.grid(True, which="both")
 plt.legend()
 plt.show()
+
