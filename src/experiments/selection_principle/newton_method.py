@@ -1,9 +1,18 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import optimize
 
 from sde.brownian_motion import brownian_motion
 from sde.numerical_schemes import euler_maruyama_1d
+
+
+def get_figures_dir():
+    root = Path(__file__).resolve().parents[3]
+    fig_dir = root / "results" / "figures" / "selection_principle" / "pathwise_solution"
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    return fig_dir
 
 
 def b(x, t):
@@ -49,7 +58,7 @@ if __name__ == "__main__":
     times = np.arange(t0, t1 + dt, dt)
     x0 = 0
 
-    rng = np.random.default_rng(42)
+    rng = np.random.default_rng(789)
     W = brownian_motion(times, rng=rng)
 
     eps_list = np.logspace(1, -6, 8)
@@ -85,9 +94,14 @@ if __name__ == "__main__":
     c_star_scipy, err_star_scipy = optimal_c(times, sample_path, c0, t_fit_max=10)
     print(f"best c scipy ≈ {c_star_scipy}, error scipy= {err_star_scipy}")
 
-    ax.set_title("SDE vanishing noise vs Peano branches")
+    ax.set_title("Zero-noise selection principle")
+    plt.ylabel(r'X_t($\omega$)')
+    plt.xlabel('t')
+    plt.grid(True, which="both")
     plt.legend(loc = "upper left")
     plt.tight_layout()
+    fig_dir = get_figures_dir()
+    plt.savefig(fig_dir / "pathwise_selection_solution.png", dpi=300)
     plt.show()
 
     delta = 1e-3
